@@ -4,7 +4,8 @@ RUN yum -y update && \
     yum list available nodejs && \
     yum install -y nodejs && \
     npm install -g aws-cdk && \
-    yum clean all
+    yum clean all && \
+    date +%s
 COPY micropipeline.py requirements.txt ./
-RUN pip --no-cache-dir install -r requirements.txt 
+RUN pip --no-cache-dir install -r requirements.txt --upgrade
 CMD ["micropipeline.lambdaHandler"]
