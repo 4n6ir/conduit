@@ -10,6 +10,8 @@ from aws_cdk.pipelines import (
 
 from constructs import Construct
 
+from conduit.conduit_stage import ConduitStage
+
 class ConduitStack(Stack):
 
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
