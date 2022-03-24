@@ -36,3 +36,13 @@ class ConduitStack(Stack):
             ),
             docker_enabled_for_synth = True
         )
+
+        pipeline.add_stage(
+            ConduitStage(
+                self, 'conduit',
+                env = cdk.Environment(
+                    account = account,
+                    region = region
+                )
+            )
+        )

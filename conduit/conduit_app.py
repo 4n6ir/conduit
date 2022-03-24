@@ -68,8 +68,7 @@ class ConduitApp(Stack):
                 BUCKET = bucket.bucket_name
             ),
             memory_size = 2048,
-            role = role,
-            vpc = vpc
+            role = role
         )
 
         micropipelinelogs = _logs.LogGroup(

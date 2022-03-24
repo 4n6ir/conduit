@@ -9,7 +9,7 @@ class ConduitStage(cdk.Stage):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        appStack = ConduittApp(
+        appStack = ConduitApp(
             self, 'app',
             synthesizer = cdk.DefaultStackSynthesizer(
                 qualifier = '4n6ir'
