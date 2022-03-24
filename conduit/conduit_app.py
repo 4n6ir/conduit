@@ -18,11 +18,11 @@ class ConduitApp(Stack):
 
         account = Stack.of(self).account
         region = Stack.of(self).region
-        micro_pipeline = 'conduit-micropipeline-'+account+'-'+region
+        nano_pipeline = 'conduit-nanopipeline-'+account+'-'+region
 
-        bucket = _s3.Bucket(
-            self, 'bucket',
-            bucket_name = micro_pipeline,
+        nanobucket = _s3.Bucket(
+            self, 'nanobucket',
+            bucket_name = nano_pipeline,
             encryption = _s3.BucketEncryption.S3_MANAGED,
             block_public_access = _s3.BlockPublicAccess.BLOCK_ALL,
             removal_policy = RemovalPolicy.DESTROY,
@@ -59,29 +59,29 @@ class ConduitApp(Stack):
             )
         )
 
-        micropipeline = _lambda.DockerImageFunction(
-            self, 'micropipeline',
-            function_name = micro_pipeline,
-            code = _lambda.DockerImageCode.from_image_asset('micropipeline'),
+        nanopipeline = _lambda.DockerImageFunction(
+            self, 'nanopipeline',
+            function_name = nano_pipeline,
+            code = _lambda.DockerImageCode.from_image_asset('nanopipeline'),
             timeout = Duration.seconds(900),
             environment = dict(
-                BUCKET = bucket.bucket_name
+                BUCKET = nanobucket.bucket_name
             ),
-            memory_size = 2048,
+            memory_size = 1048,
             role = role
         )
 
-        micropipelinelogs = _logs.LogGroup(
-            self, 'micropipelinelogs',
-            log_group_name = '/aws/lambda/'+micropipeline.function_name,
+        nanopipelinelogs = _logs.LogGroup(
+            self, 'nanopipelinelogs',
+            log_group_name = '/aws/lambda/'+nanopipeline.function_name,
             retention = _logs.RetentionDays.ONE_DAY,
             removal_policy = RemovalPolicy.DESTROY
         )
 
-        micropipelinemonitor = _ssm.StringParameter(
-            self, 'micropipelinemonitor',
-            description = 'Conduit Micropipeline',
-            parameter_name = '/conduit/micropipeline',
-            string_value = '/aws/lambda/'+micropipeline.function_name,
+        nanopipelinemonitor = _ssm.StringParameter(
+            self, 'nanopipelinemonitor',
+            description = 'Conduit Nanopipeline',
+            parameter_name = '/conduit/nanopipeline',
+            string_value = '/aws/lambda/'+nanopipeline.function_name,
             tier = _ssm.ParameterTier.STANDARD,
         )
