@@ -1,5 +1,5 @@
 FROM public.ecr.aws/lambda/python:latest
-RUN curl -fsSL https://get.docker.com | sh
+RUN yum install docker
 RUN yum -y update && \
     curl -sL https://rpm.nodesource.com/setup_16.x | bash - && \
     yum list available nodejs && \
