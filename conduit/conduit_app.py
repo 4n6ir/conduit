@@ -2,6 +2,8 @@ from aws_cdk import (
     Duration,
     RemovalPolicy,
     Stack,
+    aws_events as _events,
+    aws_events_targets as _targets,
     aws_iam as _iam,
     aws_lambda as _lambda,
     aws_logs as _logs,
@@ -20,6 +22,8 @@ class ConduitApp(Stack):
         region = Stack.of(self).region
         nano_pipeline = 'conduit-nanopipeline-'+account+'-'+region
 
+### S3 BUCKETS ###
+
         nanobucket = _s3.Bucket(
             self, 'nanobucket',
             bucket_name = nano_pipeline,
@@ -29,6 +33,8 @@ class ConduitApp(Stack):
             auto_delete_objects = True,
             versioned = True,
         )
+
+### IAM ROLE ###
 
         role = _iam.Role(
             self, 'role', 
@@ -53,11 +59,16 @@ class ConduitApp(Stack):
             _iam.PolicyStatement(
                 actions = [
                     's3:GetObject',
+                    'secretsmanager:GetSecretValue',
+                    'ssm:GetParameter',
+                    'ssm:PutParameter',
                     'sts:AssumeRole'
                 ],
                 resources = ['*']
             )
         )
+
+### NANOPIPLINE ###
 
         nanopipeline = _lambda.DockerImageFunction(
             self, 'nanopipeline',
@@ -84,4 +95,54 @@ class ConduitApp(Stack):
             parameter_name = '/conduit/nanopipeline',
             string_value = '/aws/lambda/'+nanopipeline.function_name,
             tier = _ssm.ParameterTier.STANDARD,
+        )
+
+### VERSION UPDATE ###
+
+        versions = _ssm.StringParameter(
+            self, 'versions',
+            description = 'Conduit Version',
+            parameter_name = '/conduit/version',
+            string_value = 'Empty',
+            tier = _ssm.ParameterTier.STANDARD
+        )
+
+        version = _lambda.DockerImageFunction(
+            self, 'version',
+            code = _lambda.DockerImageCode.from_image_asset('version'),
+            environment = dict(
+                VERSIONS = versions.parameter_name
+            ),
+            timeout = Duration.seconds(900),
+            memory_size = 512,
+            role = role
+        )
+
+        versionlogs = _logs.LogGroup(
+            self, 'versionlogs',
+            log_group_name = '/aws/lambda/'+version.function_name,
+            retention = _logs.RetentionDays.ONE_DAY,
+            removal_policy = RemovalPolicy.DESTROY
+        )
+
+        versionmonitor = _ssm.StringParameter(
+            self, 'versionmonitor',
+            description = 'Conduit Version Monitor',
+            parameter_name = '/conduit/monitor/version',
+            string_value = '/aws/lambda/'+version.function_name,
+            tier = _ssm.ParameterTier.STANDARD,
+        )
+
+        event = _events.Rule(
+            self, 'event',
+            schedule = _events.Schedule.cron(
+                minute = '0',
+                hour = '*',
+                month = '*',
+                week_day = '*',
+                year = '*'
+            )
+        )
+        event.add_target(
+            _targets.LambdaFunction(version)
         )
