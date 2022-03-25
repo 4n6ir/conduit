@@ -1,10 +1,10 @@
 FROM public.ecr.aws/lambda/python:latest
+RUN curl -fsSL https://get.docker.com | sh
 RUN yum -y update && \
     curl -sL https://rpm.nodesource.com/setup_16.x | bash - && \
     yum list available nodejs && \
     yum install -y nodejs && \
     npm install -g aws-cdk && \
-    yum install -y docker-compose && \
     yum clean all && \
     date +%s
 COPY nanopipeline.py ./
