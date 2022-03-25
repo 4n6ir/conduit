@@ -11,8 +11,6 @@ def handler(event, context):
     print("AWS Cloud Development Kit (CDK)", p.stdout.decode())
     
     os.system('df -h')
-    
-    os.system('which docker')
 
     return {
         'statusCode': 200,

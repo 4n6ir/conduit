@@ -1,5 +1,4 @@
 FROM public.ecr.aws/lambda/python:latest
-RUN yum install docker
 RUN yum -y update && \
     curl -sL https://rpm.nodesource.com/setup_16.x | bash - && \
     yum list available nodejs && \
@@ -7,5 +6,6 @@ RUN yum -y update && \
     npm install -g aws-cdk && \
     yum clean all && \
     date +%s
-COPY nanopipeline.py ./
+COPY nanopipeline.py requirements.txt ./
+RUN pip --no-cache-dir install -r requirements.txt --upgrade
 CMD ["nanopipeline.handler"]
