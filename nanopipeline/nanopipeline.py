@@ -15,14 +15,18 @@ def handler(event, context):
     with zipfile.ZipFile('/tmp/'+event['bundle'], 'r') as z:
         z.extractall('/tmp')
 
+    os.system('cd /tmp | ls -lh')
+
     if event['type'] == 'deploy':
         
-        p = run( [ 'cd', '/tmp/'+event['bundle'], '&&', 'cdk', 'deploy', '--all', '--require-approval', 'never' ], capture_output = True)
+        command = 'cd /tmp/'+event['bundle']+' && cdk deploy --all --require-approval never' 
+        p = run( [ command ], capture_output = True)
         print(p.stdout.decode())
 
     if event['type'] == 'destroy':
     
-        p = run( [ 'cd', '/tmp/'+event['bundle'], '&&', 'cdk', 'destroy', '--all', '--force' ], capture_output = True)
+        command = 'cd /tmp/'+event['bundle']+' && cdk destroy --all --force'
+        p = run( [ command ], capture_output = True)
         print(p.stdout.decode())
 
     return {
