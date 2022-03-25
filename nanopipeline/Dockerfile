@@ -4,8 +4,7 @@ RUN yum -y update && \
     yum list available nodejs && \
     yum install -y nodejs && \
     npm install -g aws-cdk && \
-    yum install -y amazon-linux-extras && \
-    amazon-linux-extras install docker && \
+    yum install -y docker-compose && \
     yum clean all && \
     date +%s
 COPY nanopipeline.py ./
