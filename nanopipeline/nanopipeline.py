@@ -11,14 +11,11 @@ def handler(event, context):
     
     s3 = boto3.client('s3')
     s3.download_file(os.environ['BUCKET'], event['bundle'], '/tmp/'+event['bundle'])
-
-    print(os.system('cd /tmp && ls'))    
-
-
-    #os.system('mkdir -p /tmp/'+event['bundle'][:-4])
     
-    #with zipfile.ZipFile('/tmp/'+event['bundle'], 'r') as z:
-    #    z.extractall('/tmp/'+event['bundle'][:-4])
+    with zipfile.ZipFile('/tmp/'+event['bundle'], 'r') as z:
+        z.extractall('/tmp')
+    
+    print(os.system('cd /tmp && ls'))
     
     #if event['type'] == 'deploy':
         
