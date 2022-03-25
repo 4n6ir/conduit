@@ -15,7 +15,7 @@ def handler(event, context):
     os.system('mkdir -p /tmp/'+event['bundle'][:-4])
     
     with zipfile.ZipFile('/tmp/'+event['bundle'], 'r') as z:
-        z.extractall('/tmp'+event['bundle'][:-4])
+        z.extractall('/tmp/'+event['bundle'][:-4])
     
     if event['type'] == 'deploy':
         
