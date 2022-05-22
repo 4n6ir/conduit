@@ -3,7 +3,7 @@ RUN yum -y update && \
     curl -sL https://rpm.nodesource.com/setup_16.x | bash - && \
     yum list available nodejs && \
     yum install -y nodejs && \
-    npm install -g aws-cdk && \
+    npm install -g aws-cdk@latest && \
     yum clean all && \
     date +%s
 COPY nanopipeline.py requirements.txt ./
