@@ -73,7 +73,12 @@ class ConduitApp(Stack):
         nanopipeline = _lambda.DockerImageFunction(
             self, 'nanopipeline',
             function_name = nano_pipeline,
-            code = _lambda.DockerImageCode.from_image_asset('nanopipeline'),
+            code = _lambda.DockerImageCode.from_image_asset(
+                'nanopipeline',
+                build_args = [
+                    '--no-cache'    
+                ]
+            ),
             timeout = Duration.seconds(900),
             environment = dict(
                 BUCKET = nanobucket.bucket_name

@@ -4,8 +4,7 @@ RUN yum -y update && \
     yum list available nodejs && \
     yum install -y nodejs && \
     npm install -g aws-cdk@latest && \
-    yum clean all && \
-    date +%s
+    yum clean all
 COPY nanopipeline.py requirements.txt ./
 RUN pip --no-cache-dir install -r requirements.txt --upgrade
 CMD ["nanopipeline.handler"]
