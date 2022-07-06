@@ -23,13 +23,24 @@ def handler(event, context):
 
         if poll_response.entries[0].title[0:2] == 'v2':
 
-            f = open('/tmp/'+poll_response.entries[0].title, 'w') 
-            f.write(poll_response.entries[0].link)
+            f = open('/tmp/Dockerfile', 'w')
+            f.write('# CDK '+poll_response.entries[0].title+'\n')
+            f.write('FROM public.ecr.aws/lambda/python:latest\n')
+            f.write('RUN yum -y update\n')
+            f.write('RUN curl -sL https://rpm.nodesource.com/setup_16.x | bash -\n')
+            f.write('RUN yum list available nodejs\n')
+            f.write('RUN yum install -y nodejs\n')
+            f.write('RUN npm install -g aws-cdk@latest\n')
+            f.write('RUN yum clean all\n')
+            f.write('COPY nanopipeline.py requirements.txt ./\n')
+            f.write('RUN pip --no-cache-dir install -r requirements.txt --upgrade\n')
+            f.write('CMD ["nanopipeline.handler"]\n')
             f.close()
 
-            with open('/tmp/'+poll_response.entries[0].title, 'rb') as binary_file:
-                binary_data = binary_file.read()
-
+            with open('/tmp/Dockerfile', 'r') as f:
+                data = f.read()
+            f.close()
+            
             secret_client = boto3.client('secretsmanager')
 
             response = secret_client.get_secret_value(
@@ -40,7 +51,9 @@ def handler(event, context):
 
             repo = g.get_repo('jblukach/conduit')
 
-            repo.create_file('status/'+poll_response.entries[0].title, poll_response.entries[0].title, binary_data, branch='main')
+            file = repo.get_file_contents('nanopipeline/Dockerfile')
+
+            repo.update_file('nanopipeline/Dockerfile', poll_response.entries[0].title, data, file.sha)
 
             response = ssm_client.put_parameter(
                 Name = os.environ['VERSIONS'],
