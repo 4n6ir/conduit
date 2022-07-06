@@ -51,9 +51,9 @@ def handler(event, context):
 
             repo = g.get_repo('jblukach/conduit')
 
-            file = repo.get_file_contents('nanopipeline/Dockerfile')
+            contents = repo.get_contents('nanopipeline/Dockerfile')
 
-            repo.update_file('nanopipeline/Dockerfile', poll_response.entries[0].title, data, file.sha)
+            repo.update_file(contents.path, poll_response.entries[0].title, data, contents.sha)
 
             response = ssm_client.put_parameter(
                 Name = os.environ['VERSIONS'],
