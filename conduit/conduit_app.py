@@ -75,9 +75,9 @@ class ConduitApp(Stack):
             function_name = nano_pipeline,
             code = _lambda.DockerImageCode.from_image_asset(
                 'nanopipeline',
-                build_args = [
-                    '--no-cache'    
-                ]
+                build_args = {
+                    'NOCACHE': '--no-cache'
+                }
             ),
             timeout = Duration.seconds(900),
             environment = dict(
