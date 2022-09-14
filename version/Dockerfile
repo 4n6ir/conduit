@@ -4,3 +4,6 @@ RUN yum update -y && \
 RUN pip --no-cache-dir install feedparser PyGithub
 COPY version.py ./
 CMD ["version.handler"]
+
+
+
