@@ -1,9 +1,5 @@
 FROM public.ecr.aws/lambda/python:latest
-RUN yum update -y && \
-    yum clean all
-RUN pip --no-cache-dir install feedparser PyGithub
-COPY version.py ./
+RUN yum -y update && yum clean all
+COPY version.py requirements.txt ./
+RUN pip --no-cache-dir install -r requirements.txt --upgrade
 CMD ["version.handler"]
-
-
-

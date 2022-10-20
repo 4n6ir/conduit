@@ -18,6 +18,7 @@ ConduitStack(
     )
 )
 
-cdk.Tags.of(app).add('conduit','conduit')
+cdk.Tags.of(app).add('Alias','Pipeline')
+cdk.Tags.of(app).add('GitHub','https://github.com/jblukach/conduit.git')
 
 app.synth()
