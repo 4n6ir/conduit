@@ -1,5 +1,6 @@
 import aws_cdk as cdk
 
+from aws_cdk import Aspects
 from aws_cdk import Stack
 
 from aws_cdk.pipelines import (
@@ -7,6 +8,8 @@ from aws_cdk.pipelines import (
     CodePipelineSource,
     ShellStep
 )
+
+import cdk_nag
 
 from constructs import Construct
 
@@ -16,6 +19,22 @@ class ConduitStack(Stack):
 
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
+
+        Aspects.of(self).add(
+            cdk_nag.AwsSolutionsChecks(
+                log_ignores = True,
+                verbose = True
+            )
+        )
+
+        cdk_nag.NagSuppressions.add_stack_suppressions(
+            self, suppressions = [
+                {'id': 'AwsSolutions-S1','reason': 'GitHub Issue'},
+                {'id': 'AwsSolutions-IAM5','reason': 'GitHub Issue'},
+                {'id': 'AwsSolutions-CB3','reason': 'GitHub Issue'},
+                {'id': 'AwsSolutions-CB4','reason': 'GitHub Issue'}
+            ]
+        )
 
         account = Stack.of(self).account
         region = Stack.of(self).region
@@ -47,4 +66,4 @@ class ConduitStack(Stack):
             )
         )
 
-
+        pipeline.build_pipeline()
