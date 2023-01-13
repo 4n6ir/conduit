@@ -100,7 +100,7 @@ class ConduitApp(Stack):
             environment = dict(
                 BUCKET = nanobucket.bucket_name
             ),
-            memory_size = 1048,
+            memory_size = 2048,
             role = role
         )
 
