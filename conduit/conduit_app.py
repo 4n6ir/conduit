@@ -24,19 +24,9 @@ class ConduitApp(Stack):
 
 ### LAMBDA LAYER ###
 
-        if region == 'ap-northeast-1' or region == 'ap-south-1' or region == 'ap-southeast-1' or \
-            region == 'ap-southeast-2' or region == 'eu-central-1' or region == 'eu-west-1' or \
-            region == 'eu-west-2' or region == 'me-central-1' or region == 'us-east-1' or \
-            region == 'us-east-2' or region == 'us-west-2': number = str(1)
-
-        if region == 'af-south-1' or region == 'ap-east-1' or region == 'ap-northeast-2' or \
-            region == 'ap-northeast-3' or region == 'ap-southeast-3' or region == 'ca-central-1' or \
-            region == 'eu-north-1' or region == 'eu-south-1' or region == 'eu-west-3' or \
-            region == 'me-south-1' or region == 'sa-east-1' or region == 'us-west-1': number = str(2)
-
         layer = _lambda.LayerVersion.from_layer_version_arn(
             self, 'layer',
-            layer_version_arn = 'arn:aws:lambda:'+region+':070176467818:layer:getpublicip:'+number
+            layer_version_arn = 'arn:aws:lambda:'+region+':070176467818:layer:getpublicip:3'
         )
 
 ### S3 BUCKETS ###
@@ -48,6 +38,7 @@ class ConduitApp(Stack):
             block_public_access = _s3.BlockPublicAccess.BLOCK_ALL,
             removal_policy = RemovalPolicy.DESTROY,
             auto_delete_objects = True,
+            enforce_ssl = True,
             versioned = True,
         )
 
