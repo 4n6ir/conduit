@@ -1,9 +1,12 @@
 import aws_cdk as cdk
 
+import aws_cdk.aws_codebuild as _codebuild
+
 from aws_cdk import Aspects
 from aws_cdk import Stack
 
 from aws_cdk.pipelines import (
+    CodeBuildOptions,
     CodePipeline,
     CodePipelineSource,
     ShellStep
@@ -52,6 +55,11 @@ class ConduitStack(Stack):
                     'python -m pip install -r requirements.txt', 
                     'cdk synth'
                 ]
+            ),
+            code_build_defaults = CodeBuildOptions(
+                build_environment = _codebuild.BuildEnvironment(
+                    build_image = _codebuild.LinuxBuildImage.STANDARD_6_0
+                )
             ),
             docker_enabled_for_synth = True
         )
