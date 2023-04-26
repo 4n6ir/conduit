@@ -1,4 +1,4 @@
-# CDK v2.76.0
+# CDK v2.77.0
 FROM public.ecr.aws/lambda/python:latest
 RUN yum -y update
 RUN curl -sL https://rpm.nodesource.com/setup_16.x | bash -
