@@ -22,13 +22,6 @@ class ConduitApp(Stack):
         region = Stack.of(self).region
         nano_pipeline = 'conduit-nanopipeline-'+account+'-'+region
 
-### LAMBDA LAYER ###
-
-        layer = _lambda.LayerVersion.from_layer_version_arn(
-            self, 'layer',
-            layer_version_arn = 'arn:aws:lambda:'+region+':070176467818:layer:getpublicip:3'
-        )
-
 ### S3 BUCKETS ###
 
         nanobucket = _s3.Bucket(
